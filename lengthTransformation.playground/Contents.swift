@@ -33,3 +33,5 @@ if unitNumCm.contains("cm") {
     just += unitNumCm.prefix(upTo: unitNumCm.index(of: "m")!)
 }
 unitNumCm.contains("cm") ? print("\(Double(just)!/100)m") : print("\(Double(just)!*100)cm")
+
+
