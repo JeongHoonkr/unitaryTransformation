@@ -2,7 +2,6 @@
 
 import UIKit
 
-
 // 길이 변환 및 출력
 /*
  * 요구사항
@@ -14,30 +13,15 @@ import UIKit
  로그래밍 길이 변환" 혹은 "프로그래밍 단위 변환" 같은 키워드로 검색하고 변환(계산) 방법을 찾아 구현한다.
  */
 
-// 120cm
+var cmUnitNum : String = "14444444cm"
+cmUnitNum = "142m"
 
-
-func unitChange(inputType: String, outputType: String, inputValue: Double) -> String {
-    
-    var returnValue: String = ""
-    if inputType == "cm" &&  outputType == "m" {
-        returnValue = String(inputValue / 100) + outputType
-    } else if inputType == "m" &&  outputType == "cm" {
-        returnValue = String(inputValue * 100) + outputType
-    } else {
-        returnValue += "올바른 타입과 숫자를 입력해주세요"
-    }
-    return returnValue
+if cmUnitNum.contains("cm") {
+    let firstCharOfUnit = cmUnitNum.index(of: "c") ?? cmUnitNum.endIndex
+    let justNum = cmUnitNum[..<firstCharOfUnit]
+    print (String("\(Double(justNum)!/100)m"))
+} else {
+    let firstCharOfUnit = cmUnitNum.index(of: "m") ?? cmUnitNum.endIndex
+    let justNum = cmUnitNum[..<firstCharOfUnit]
+    print (String("\(Double(justNum)!*100)cm"))
 }
-print(unitChange(inputType: "cm", outputType: "m", inputValue: 123))
-print(unitChange(inputType: "ㅗㅓ", outputType: "cm", inputValue: 1.2))
-
-
-var str = "123cm"
-
-if str.contains("cm") {
-    var unit = str.substring(from: str.index(str.endIndex, offsetBy: -2))
-    var number = str.substring(to: str.index(str.startIndex, offsetBy: 3))
-    print ("\((Double(number))!/100)m")
-}
-
