@@ -67,10 +67,3 @@ func printNumString (_ input: String) -> String {
 // 스트링에서 숫자로 형변
 printNumString("1m")
 printNumString("145cm")
-
-
-struct Unit {
-    let centi: String = "Centi"
-    var meter: String
-}
-
