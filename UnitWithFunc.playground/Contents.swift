@@ -21,7 +21,6 @@ var str = "Hello, playground"
 
 // 센티를 미터로 바꾸는 함수
 
-
 // cenit를 meter로 숫자만 바꾸기 : trimmingCharacters사용
 func cmToM (_ input: String) -> Double {
     var num: Double = 0.0
@@ -48,14 +47,18 @@ func unitCovertMToCm (_ input: String) -> Double {
 // centi를 미터로 바꾸기 : prefix upto와 index사용
 func unitCovertCentiToM (_ input: String) -> Double {
     var num: Double = 0.0
-    
-    // index(of: )의 반환타입이 옵셔널이기 때문에 바인딩을 해주거나 아래와 같이 강제언래핑을 할 수도 있다.
-    num += Double(input.prefix(upTo: input.index(of: "c")!))!
+    var input = input
+    let range = input.index(input.endIndex, offsetBy: -2)..<input.endIndex
+    input.removeSubrange(range)
+    num += Double(input)!
+    // 위 내용을 prefix로 사용한 예
+    // index(of: )의 반환타입이 옵셔널이기 때문에 바인딩을 해주거나
+    // 아래와 같이 강제언래핑을 할 수도 있다.
+    // num += Double(input.prefix(upTo: input.index(of: "c")!))!
     // 위 내용을 nil결합연산자로 변환한 예
     // num += Double(input.prefix(upTo: input.index(of: "c") ?? input.endIndex))!
     return num
 }
-
 
 // 변환된 문자를 단위변환함수 호출하여 출력
 func printNumString (_ input: String) -> String {
@@ -71,4 +74,3 @@ func printNumString (_ input: String) -> String {
 // 스트링에서 숫자로 형변
 printNumString("1m")
 printNumString("145cm")
-
