@@ -48,7 +48,11 @@ func unitCovertMToCm (_ input: String) -> Double {
 // centi를 미터로 바꾸기 : prefix upto와 index사용
 func unitCovertCentiToM (_ input: String) -> Double {
     var num: Double = 0.0
-    num += Double(input.prefix(upTo: input.index(before: input.index(of: "m")!)))!
+    
+    // index(of: )의 반환타입이 옵셔널이기 때문에 바인딩을 해주거나 아래와 같이 강제언래핑을 할 수도 있다.
+    num += Double(input.prefix(upTo: input.index(of: "c")!))!
+    // 위 내용을 nil결합연산자로 변환한 예
+    // num += Double(input.prefix(upTo: input.index(of: "c") ?? input.endIndex))!
     return num
 }
 
@@ -67,3 +71,4 @@ func printNumString (_ input: String) -> String {
 // 스트링에서 숫자로 형변
 printNumString("1m")
 printNumString("145cm")
+
