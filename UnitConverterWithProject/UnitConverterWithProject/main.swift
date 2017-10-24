@@ -51,26 +51,28 @@ func convertCentiToM (_ input: Double) -> String {
     return result
 }
 
+func makeStringresult (_ input: String) -> String {
+    var result: String = "변환된 값 : "
+    if input.hasSuffix("cm") {
+        result += convertCentiToM(eraseCentiUnit(input))
+    } else if input.hasSuffix("m") {
+        result += convertMeterToCenti(eraseMeterUnit(input))
+    } else {
+        result += "지원하지 않는 단위입니다."
+    }
+    return result
+}
+
 // 함수 5: 출력
 func printResult (_ result: String) {
     print(result)
 }
 
 // 프로그램 루프
-unitConvertLoop : while true {
+while true {
     print ("변환하고 싶은 단위를 입력해주세요.")
     let input = getUserInput()
     if input == "q" || input == "quit" { break }
-    
-    var result: String = ": "
-    if input.hasSuffix("cm") {
-        result += convertCentiToM(eraseCentiUnit(input))
-    } else if input.hasSuffix("m") {
-        result += convertMeterToCenti(eraseMeterUnit(input))
-    } else {
-        print ("지원하지 않는 단위입니다.")
-        continue unitConvertLoop
-    }
-    printResult(result)
+    printResult(makeStringresult(input))
+    print("--------------------------")
 }
-
