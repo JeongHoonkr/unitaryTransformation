@@ -4,19 +4,18 @@
 //  Created by Choi Jeong Hoon on 2017. 10. 22..
 //  Copyright © 2017년 JH Factory. All rights reserved.
 
-
 /* 로직 :
  1. 프로그램 구현부에서 유저 인풋값을 받음
  2. 인풋값이 프린트함수를 호출 : 프린트함수는 연산함수를 인수로 받음
  3. 변환함수가 아래의 함수를 호출함
-   함수1 : 유저인풋 받아서 배열로 나누기
-   함수2 : 갖고있는 단위인지 아닌지 판별하여 불값으로 리턴 (있으면 트루, 없으면 폴스)
-      - 갖고있는 단위가 없어서 false라면 "지원하지 않는 단위입니다." 출력하고 프로그램 다시 돌림
-   함수3 : 배열의 길이가 2인지 1인지 판별하여 배열을 튜플 스트링으로 리턴해줌
-      - 배열의 길이가 1이라면 현재갖고있는 단위를 확인하고 숫자와 단위로 리턴
-      - 배열의 길이가 2라면 현재단위와 목표단위와 숫자로 리턴
-   함수4 : 함수3번이 반환한 값을 인수로 받아 연산하는 함수
-      - 받은 인수에 따라 현재단위를 목표단위로 바꿔줄것인지, 현재단위만 cm-m을 상호 변환해줄것인지 선택하여 연산된 값을 리턴
+ 함수1 : 유저인풋 받아서 배열로 나누기
+ 함수2 : 갖고있는 단위인지 아닌지 판별하여 불값으로 리턴 (있으면 트루, 없으면 폴스)
+ - 갖고있는 단위가 없어서 false라면 "지원하지 않는 단위입니다." 출력하고 프로그램 다시 돌림
+ 함수3 : 배열의 길이가 2인지 1인지 판별하여 배열을 튜플 스트링으로 리턴해줌
+ - 배열의 길이가 1이라면 현재갖고있는 단위를 확인하고 숫자와 단위로 리턴
+ - 배열의 길이가 2라면 현재단위와 목표단위와 숫자로 리턴
+ 함수4 : 함수3번이 반환한 값을 인수로 받아 연산하는 함수
+ - 받은 인수에 따라 현재단위를 목표단위로 바꿔줄것인지, 현재단위만 cm-m을 상호 변환해줄것인지 선택하여 연산된 값을 리턴
  4. 3번의 변환이 끝난값을 2번의 프린트함수가 인수로 받아 결과를 출력
  */
 
@@ -35,7 +34,7 @@ struct LengthUnit {
 }
 
 // 0-1. unittype속성값에 접근하기 위해 LengthUnit의 인스턴스 생성
-var lengUnit = LengthUnit()
+let lengUnit = LengthUnit()
 
 // 1. 입력받은 값을 배열로 넘기기   ["123cm", "inch"]
 func divideStrToArr (_ input: String) -> [String] {
@@ -73,7 +72,7 @@ func findUnit (_ strArray: [String]) -> String {
 }
 
 // 4. 배열을 스트링으로 나누기 <배열 길이에 따라 분기>
-func devideArraytoString (_ input: [String]) -> (String, String, String) {
+func devideArrToStr (_ input: [String]) -> (String, String, String) {
     var (from, num, to) = ("", "", "")
     if input.count == 2 {
         from = findUnit(input)
@@ -88,9 +87,7 @@ func devideArraytoString (_ input: [String]) -> (String, String, String) {
         if from == LengthUnit.Unittype.cm.rawValue {
             to = LengthUnit.Unittype.m.rawValue
         } else if from == LengthUnit.Unittype.m.rawValue {
-            to = LengthUnit.Unittype.cm.rawValue
-        } else {
-            print ("지원하지 목표단위 단위입니다") }
+            to = LengthUnit.Unittype.cm.rawValue }
     }
     return (from, to, num)
 }
@@ -99,11 +96,11 @@ func devideArraytoString (_ input: [String]) -> (String, String, String) {
 func excuteConverting (_ userInput: String?) -> String {
     guard let userInput = userInput else { return "" }
     var hasUnit: Bool = false
-    var result: String = "#변환된 값 : "
+    var result: String = "변환된 값 -> "
     let divide = divideStrToArr(userInput)
     hasUnit = unitCheck(divide)
     if hasUnit == true {
-        let (from, to, num) = devideArraytoString(divide)
+        let (from, to, num) = devideArrToStr(divide)
         switch (from, to) {
         case ("cm", "inch") :
             result += "\((String(convertCentiToInch(Float(num) ?? 0)) + to))"
