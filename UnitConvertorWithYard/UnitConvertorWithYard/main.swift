@@ -8,22 +8,23 @@
 
 import Foundation
 
-// 0. lengunit의 구조체 선언
-class LengthUnit {
-    enum UnitNum: Float {
-        case cm = 1, m = 100, inch = 2.54, yard = 91.44
-    }
-    enum Unittype: String {
-        case cm, m, inch, yard
-    }
-    // unit체크를 위해 배열에 넣음
-    let lengthUnitType = [Unittype.cm.rawValue, Unittype.m.rawValue, Unittype.inch.rawValue, Unittype.yard.rawValue]
+// 0. 단위이름만을 위한 구조체 선언
+struct UnitsTypeOnly {
+    enum Length: String { case cm, m, inch, yard }
+    static let lengthUnitName = [Length.cm.rawValue, Length.m.rawValue, Length.inch.rawValue, Length.yard.rawValue]
+    enum Weight: String { case g, kg, oz, lb }
+    static let weightUnitName = [Weight.g.rawValue, Weight.kg.rawValue, Weight.oz.rawValue]
+    enum Volume: String { case l, gal, pt, qt }
+    static let volumeUnitName = [Volume.l.rawValue, Volume.gal.rawValue, Volume.pt.rawValue, Volume.qt.rawValue]
 }
 
-let dicOfLengch: [String: Float] = ["cm": 1, "m": 100, "inch": 2.54, "yard": 91.44]
-
-// 0-1. unittype속성값에 접근하기 위해 LengthUnit의 인스턴스 생성
-let lengUnit = LengthUnit()
+// 0.1 루프를 돌리기 위해 단위를 딕셔너리로 선언
+struct UnitsTypeAndValue {
+    typealias DictionaryType = [String: Float]
+    static let length: DictionaryType = ["cm": 1, "m": 100, "inch": 2.54, "yard": 91.44]
+    static let weight: DictionaryType = ["g": 1, "kg": 1000, "oz": 28.34, "lb": 435.59]
+    static let volume: DictionaryType = ["l": 1, "gal": 3.785, "pt": 0.473, "qt": 0.946]
+}
 
 // 1. 입력받은 값을 배열로 넘기기   ["123cm", "inch"]
 func divideStrToArr (_ input: String) -> [String] {
@@ -37,11 +38,15 @@ func divideStrToArr (_ input: String) -> [String] {
 func unitCheck (_ input: [String]) -> Bool {
     let array = input
     var hasUnit: Bool = false
-    for i in dicOfLengch.keys {
-        if array[0].hasSuffix(i) {
-            hasUnit = true
-            break
-        } else {
+    for i in UnitsTypeAndValue.length.keys {
+        switch array.count {
+        case 2 :
+            if array[0].hasSuffix(i) || array[1].hasSuffix(i)
+            { hasUnit = true; break }
+        case 1 :
+            if array[0].hasSuffix(i)
+            { hasUnit = true; break }
+        default :
             hasUnit = false
         }
     }
@@ -51,7 +56,7 @@ func unitCheck (_ input: [String]) -> Bool {
 // 3. 첫단위 쪼개기
 func findUnit (_ strArray: [String]) -> String {
     var from: String = ""
-    for i in dicOfLengch.keys {
+    for i in UnitsTypeAndValue.length.keys {
         if strArray[0].hasSuffix(i) {
             from += i
             return from
@@ -61,14 +66,12 @@ func findUnit (_ strArray: [String]) -> String {
 }
 
 // 4. 기본단위인지 아닌지 판단하는 enum
-enum BaseUnit {
-    case base, upper }
+enum BaseUnit { case base, upper }
 
-// 부피와 무게가 추가된다면 enum을 활용해서 각 값들을 배열에 넣을 것인지, 딕셔너리로 선회할것인지 고민해보기
-// 5. 단위가 Length의 기본단위인지 아닌지 판단하는 함수
-func isBaseUnit (_ input: String) -> BaseUnit {
+// 5. 단위가 Length의 기본단위인지 아닌지 판단하는 함수 : <연산함수를 간소화하는 과정에서 연산대상을 구분짓는 기준이 필요했다?
+func checkBaseUnitofUnit (_ input: String) -> BaseUnit {
     var result: BaseUnit
-    if input == LengthUnit.Unittype.cm.rawValue {
+    if input == UnitsTypeOnly.Length.cm.rawValue {
         result = BaseUnit.base
     } else {
         result = BaseUnit.upper
@@ -91,9 +94,9 @@ func devideArrToStr (_ input: [String]) -> (String, String, String) {
         num += frontString.prefix(frontString.count - from.count)
         
         switch from {
-        case LengthUnit.Unittype.cm.rawValue : to = LengthUnit.Unittype.m.rawValue
-        case LengthUnit.Unittype.m.rawValue : to = LengthUnit.Unittype.cm.rawValue
-        default : (from, to) = ("", "")
+        case UnitsTypeOnly.Length.cm.rawValue : to = UnitsTypeOnly.Length.m.rawValue
+        case UnitsTypeOnly.Length.m.rawValue : to = UnitsTypeOnly.Length.cm.rawValue
+        default : (from, to) = ("0", "0")
         }
     }
     return (from, to, num)
@@ -101,10 +104,10 @@ func devideArrToStr (_ input: [String]) -> (String, String, String) {
 
 // enum으로 돌려보려고 했으나 실패 : enum으로 어떻게 활용할 수 있을까
 // 7. 스트링으로 변환된 단위에 맞는, 기본값을 반환하는 함수
-func checkTypeOfUnit (fromS: String, toS: String) -> (from: Float, to: Float) {
+func returnValueOfUnit (fromS: String, toS: String) -> (from: Float, to: Float) {
     var from: Float = 0.0
     var to: Float = 0.0
-    for (key, value) in dicOfLengch {
+    for (key, value) in UnitsTypeAndValue.length {
         if fromS == key { from = value }
         if toS == key { to = value }
     }
@@ -112,11 +115,11 @@ func checkTypeOfUnit (fromS: String, toS: String) -> (from: Float, to: Float) {
 }
 
 // 8. 연산하는 함수
-func convertToUnit(num input: Float, from fromUnit: Float, to toUnit: Float, isbaseUnit: BaseUnit) -> Float{
+func convertUnit(num input: Float, from fromUnit: Float, to toUnit: Float, isBaseUnit: BaseUnit) -> Float{
     var result: Float = 0.0
-    if isbaseUnit == BaseUnit.base {
+    if isBaseUnit == BaseUnit.base {
         result += input/toUnit
-    } else if isbaseUnit == BaseUnit.upper {
+    } else if isBaseUnit == BaseUnit.upper {
         result = (input * fromUnit)/toUnit
     }
     return result
@@ -125,7 +128,7 @@ func convertToUnit(num input: Float, from fromUnit: Float, to toUnit: Float, isb
 // 9. 결과값에 목표단위 붙히는 함수
 func addUnitAtResult (_ resultNum: Float, toU toUnit: String) -> String {
     var result: String = ""
-    result += "\(String(resultNum) + toUnit)"
+    result += "\(String(resultNum) + " " + toUnit)"
     return result
 }
 
@@ -137,10 +140,11 @@ func excuteConverting (_ userInput: String?) -> String {
     var result: String = "변환된 값 -> "
     let divide = divideStrToArr(userInput)
     hasUnit = unitCheck(divide)
+    
     if hasUnit == true {
         let (from, to, num) = devideArrToStr(divide)
-        let (reFromN, reToN) = checkTypeOfUnit(fromS: from, toS: to)
-        almostResult = convertToUnit(num: Float(num) ?? 0.0, from: reFromN, to: reToN, isbaseUnit: isBaseUnit(from))
+        let (reFromN, reToN) = returnValueOfUnit(fromS: from, toS: to)
+        almostResult = convertUnit(num: Float(num) ?? 0.0, from: reFromN, to: reToN, isBaseUnit: checkBaseUnitofUnit(from))
         result += addUnitAtResult(almostResult, toU: to)
     } else {
         result += ("지원하지 않는 단위입니다.")
@@ -149,9 +153,7 @@ func excuteConverting (_ userInput: String?) -> String {
 }
 
 // 11. 출력
-func printResult (_ result: String) {
-    print(result)
-}
+func printResult (_ result: String) { print(result) }
 
 // 12. 프로그램 구현부
 unitConvertLoop : while true {
@@ -162,11 +164,3 @@ unitConvertLoop : while true {
     printResult(excuteConverting(userInput))
     print("------------------\n")
 }
-
-
-/*
- switch convertWise {
- case .toLower: result = input * unit.rawValue
- case .toUpper: result = input / unit.rawValue
- }
- */
