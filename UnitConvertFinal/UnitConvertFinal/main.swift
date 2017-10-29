@@ -69,7 +69,7 @@ class Separating {
         return (from, num, to)
     }
     
-    // 5-4. 배열의 길이가 1일떄 배열을 문자열로 분리   : 작동을 안하는중
+    // 5-4. 배열의 길이가 1일떄 배열을 문자열로 분리 <이 부분이 보기 싫다. 어떻게 수정할 수 있을까>
     func divideOneArray (_ input: [String], type unitType: UnitsType) -> (String,  String, Array<String>) {
         from = findUnit(input) ?? ""
         let frontString = input[0]
@@ -147,7 +147,7 @@ class CheckUnit: Separating {
 
 // 7. 연산 클래스
 class Operator: CheckUnit {
-    // 7-1. 연산함수
+    // 7-1. 연산함수  <단순케이스 비교같다..있어보이게 변경할 수 없을까>
     func convertNum (num input: String, fromUnit from: String, to toUnits: [String], _ isBaseUnit: BaseUnit, _ unitType: UnitsType) -> String {
         var result: String = ""
         for toUnit in toUnits {
@@ -183,7 +183,7 @@ class Operator: CheckUnit {
     }
 }
 
-// 8. 모든 함수를 호출하여 값을 반환하는 함수
+// 8. 모든 함수를 호출하여 값을 반환하는 함수   <길어서 읽기가 힘들다, 프로그램 구현부와 역할분담을 해야할까?>
 func excuteConverting (_ userInput: String?) -> String {
     guard let userInput = userInput else { return "" }
     var result: String = ""
@@ -191,6 +191,7 @@ func excuteConverting (_ userInput: String?) -> String {
     var (num, targetUnits): (String, [String]) = ("", [])
     let firstArray = convert.divideStringtoArray(userInput)
     var canConvert: Bool = false
+    
     if var from = convert.findUnit(firstArray) {
         let checkUnit = convert.checkUnitsType(from)
         if firstArray.count == 2 {
