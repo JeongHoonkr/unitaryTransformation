@@ -116,7 +116,7 @@ class CheckUnit: Separating {
     enum BaseUnit { case base, upper }
     
     // 6-3. 기본단위인지 아닌지 판단하는 함수
-    func checkBaseUnitofUnit (_ input: String) -> BaseUnit {
+    func checkBaseOfUnit (_ input: String) -> BaseUnit {
         var result: BaseUnit
         switch input {
         case LengthUnit.UnitName.cm.rawValue : result = BaseUnit.base
@@ -128,19 +128,18 @@ class CheckUnit: Separating {
     }
     
     // 6-3. 출발단위와 목표단위가 상호 변환가능한 단위인지 확인
-    func compareUnitType (from fromUnit: String, to Unit: [String]) -> Bool {
+    func compareUnitType (_ fromUnit: String, _ Units: [String]) -> Bool {
         var isPossibleConvert: Bool = false
         let fromUnit = checkUnitsType(from)     // cm이면 length
         var targetUnit: UnitsType
-        for i in Unit {
-            targetUnit = checkUnitsType(i)
+        for unit in Units {
+            targetUnit = checkUnitsType(unit)
             if fromUnit == targetUnit {
                 isPossibleConvert = true
             } else {
                 isPossibleConvert = false
             }
         }
-        print (isPossibleConvert)
         return isPossibleConvert
     }
 }
@@ -148,33 +147,33 @@ class CheckUnit: Separating {
 // 7. 연산 클래스
 class Operator: CheckUnit {
     // 7-1. 연산함수  <단순케이스 비교같다..있어보이게 변경할 수 없을까>
-    func convertNum (num input: String, fromUnit from: String, to toUnits: [String], _ isBaseUnit: BaseUnit, _ unitType: UnitsType) -> String {
+    func convertNum (_ inputNum: String, _ from: String, _ toUnits: [String], _ isBaseUnit: BaseUnit, _ unitType: UnitsType) -> String {
         var result: String = ""
         for toUnit in toUnits {
             if isBaseUnit == BaseUnit.base {
                 switch unitType {
                 case .length :
                     let length = LengthUnit.nameAndValue
-                    result += String(Float(input)! / (length[toUnit] ?? 1.0)) + toUnit + "\n"
+                    result += String(Float(inputNum)! / (length[toUnit] ?? 1.0)) + toUnit + "\n"
                 case .weight :
                     let weight = WeightUnit.nameAndValue
-                    result += String(Float(input)! / (weight[toUnit] ?? 1.0)) + toUnit + "\n"
+                    result += String(Float(inputNum)! / (weight[toUnit] ?? 1.0)) + toUnit + "\n"
                 case .volume :
                     let volume = VolumeUnit.nameAndValue
-                    result += String(Float(input)! / (volume[toUnit] ?? 1.0)) + toUnit + "\n"
+                    result += String(Float(inputNum)! / (volume[toUnit] ?? 1.0)) + toUnit + "\n"
                 default : break
                 }
             } else if isBaseUnit == BaseUnit.upper {
                 switch unitType {
                 case .length :
                     let length = LengthUnit.nameAndValue
-                    result += String((Float(input)! * (length[from]!) / (length[toUnit] ?? 1.0))) + toUnit + "\n"
+                    result += String((Float(inputNum)! * (length[from]!) / (length[toUnit] ?? 1.0))) + toUnit + "\n"
                 case .weight :
                     let weight = WeightUnit.nameAndValue
-                    result += String((Float(input)! * (weight[from]!)) / (weight[toUnit] ?? 1.0)) + toUnit + "\n"
+                    result += String((Float(inputNum)! * (weight[from]!)) / (weight[toUnit] ?? 1.0)) + toUnit + "\n"
                 case .volume :
                     let volume = VolumeUnit.nameAndValue
-                    result += String((Float(input)! * (volume[from]!)) / (volume[toUnit] ?? 1.0)) + toUnit + "\n"
+                    result += String((Float(inputNum)! * (volume[from]!)) / (volume[toUnit] ?? 1.0)) + toUnit + "\n"
                 default : break
                 }
             }
@@ -189,26 +188,26 @@ func excuteConverting (_ userInput: String?) -> String {
     var result: String = ""
     let convert = Operator()
     var (num, targetUnits): (String, [String]) = ("", [])
-    let firstArray = convert.divideStringtoArray(userInput)
+    let modifiedInput = convert.divideStringtoArray(userInput)
     var canConvert: Bool = false
     
-    if var from = convert.findUnit(firstArray) {
+    if var from = convert.findUnit(modifiedInput) {
         let checkUnit = convert.checkUnitsType(from)
-        if firstArray.count == 2 {
-            (from, num, targetUnits) = convert.divideTwoArray(firstArray, type: checkUnit)
-            canConvert = convert.compareUnitType(from: from, to: targetUnits)
+        if modifiedInput.count == 2 {
+            (from, num, targetUnits) = convert.divideTwoArray(modifiedInput, type: checkUnit)
+            canConvert = convert.compareUnitType(from, targetUnits)
             if canConvert == true {
-                let baseOrUpper = convert.checkBaseUnitofUnit(from)
-                result = convert.convertNum(num: num, fromUnit: from, to: targetUnits, baseOrUpper, convert.checkUnitsType(from))
+                let baseOrUpper = convert.checkBaseOfUnit(from)
+                result = convert.convertNum(num, from, targetUnits, baseOrUpper, convert.checkUnitsType(from))
             } else if canConvert == false {
                 result += "상호간의 변환할 수 업는 단위입니다"
             }
-        } else if firstArray.count == 1 {
-            (from, num, targetUnits) = convert.divideOneArray(firstArray, type: checkUnit)
-            canConvert = convert.compareUnitType(from: from, to: targetUnits)
+        } else if modifiedInput.count == 1 {
+            (from, num, targetUnits) = convert.divideOneArray(modifiedInput, type: checkUnit)
+            canConvert = convert.compareUnitType(from, targetUnits)
             if canConvert == true {
-                let baseOrUpper = convert.checkBaseUnitofUnit(from)
-                result = convert.convertNum(num: num, fromUnit: from, to: targetUnits, baseOrUpper, convert.checkUnitsType(from))
+                let baseOrUpper = convert.checkBaseOfUnit(from)
+                result = convert.convertNum(num, from, targetUnits, baseOrUpper, convert.checkUnitsType(from))
             } else if canConvert == false {
                 result += "상호간의 변환할 수 업는 단위입니다"
             }
