@@ -1,11 +1,3 @@
-//
-//  main.swift
-//  UnitConvertorWithYard
-//
-//  Created by Choi Jeong Hoon on 2017. 10. 25..
-//  Copyright © 2017년 JH Factory. All rights reserved.
-//
-
 import Foundation
 
 // 0. 단위이름 체크를 위한 구조체 선언
@@ -16,8 +8,8 @@ struct UnitsName {
     enum Weight: String { case g, kg, oz, lb }
     static let weight = [Weight.g.rawValue, Weight.kg.rawValue, Weight.oz.rawValue, Weight.lb.rawValue]
     
-    enum Volume: String { case l, gal, pt, qt }
-    static let volume = [Volume.l.rawValue, Volume.gal.rawValue, Volume.pt.rawValue, Volume.qt.rawValue]
+    enum Volume: String { case L, gal, pt, qt }
+    static let volume = [Volume.L.rawValue, Volume.gal.rawValue, Volume.pt.rawValue, Volume.qt.rawValue]
 }
 
 // 0.1 루프를 돌리기 위해 단위를 딕셔너리로 선언
@@ -79,7 +71,7 @@ func checkBaseUnitofUnit (_ input: String) -> BaseUnit {
     switch input {
     case UnitsName.Length.cm.rawValue : result = BaseUnit.base
     case UnitsName.Weight.g.rawValue : result = BaseUnit.base
-    case UnitsName.Volume.l.rawValue : result = BaseUnit.base
+    case UnitsName.Volume.L.rawValue : result = BaseUnit.base
     default : result = BaseUnit.upper
     }
     return result
