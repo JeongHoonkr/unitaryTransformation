@@ -104,7 +104,7 @@ class Separating {
 class CheckUnit: Separating {
     
     // 6-1. 해당단위가 속한 단위범주가 어떤단위인지 판단해주는 함수
-     func checkUnitsType (_ inputUnit: String) -> UnitsType {
+    func checkUnitsType (_ inputUnit: String) -> UnitsType {
         var unitType : UnitsType = .none
         if LengthUnit.UnitName.init(rawValue: inputUnit) != nil    { unitType = UnitsType.length }
         else if WeightUnit.UnitName.init(rawValue: inputUnit) != nil{ unitType = UnitsType.weight }
@@ -149,31 +149,32 @@ class Operator: CheckUnit {
     // 7-1. 연산함수  <단순케이스 비교같다..있어보이게 변경할 수 없을까>
     func convertNum (_ inputNum: String, _ from: String, _ toUnits: [String], _ isBaseUnit: BaseUnit, _ unitType: UnitsType) -> String {
         var result: String = ""
+        let inputNum: Float = Float(inputNum) ?? 0
         for toUnit in toUnits {
             if isBaseUnit == BaseUnit.base {
                 switch unitType {
                 case .length :
                     let length = LengthUnit.nameAndValue
-                    result += String(Float(inputNum)! / (length[toUnit] ?? 1.0)) + toUnit + "\n"
+                    result += String(inputNum / (length[toUnit] ?? 0)) + toUnit + "\n"
                 case .weight :
                     let weight = WeightUnit.nameAndValue
-                    result += String(Float(inputNum)! / (weight[toUnit] ?? 1.0)) + toUnit + "\n"
+                    result += String(inputNum / (weight[toUnit] ?? 0)) + toUnit + "\n"
                 case .volume :
                     let volume = VolumeUnit.nameAndValue
-                    result += String(Float(inputNum)! / (volume[toUnit] ?? 1.0)) + toUnit + "\n"
+                    result += String(inputNum / (volume[toUnit] ?? 0)) + toUnit + "\n"
                 default : break
                 }
             } else if isBaseUnit == BaseUnit.upper {
                 switch unitType {
                 case .length :
                     let length = LengthUnit.nameAndValue
-                    result += String((Float(inputNum)! * (length[from]!) / (length[toUnit] ?? 1.0))) + toUnit + "\n"
+                    result += String((inputNum * (length[from]!) / (length[toUnit] ?? 0))) + toUnit + "\n"
                 case .weight :
                     let weight = WeightUnit.nameAndValue
-                    result += String((Float(inputNum)! * (weight[from]!)) / (weight[toUnit] ?? 1.0)) + toUnit + "\n"
+                    result += String((inputNum * (weight[from]!)) / (weight[toUnit] ?? 0)) + toUnit + "\n"
                 case .volume :
                     let volume = VolumeUnit.nameAndValue
-                    result += String((Float(inputNum)! * (volume[from]!)) / (volume[toUnit] ?? 1.0)) + toUnit + "\n"
+                    result += String((inputNum * (volume[from]!)) / (volume[toUnit] ?? 0)) + toUnit + "\n"
                 default : break
                 }
             }
@@ -199,7 +200,7 @@ func excuteConverting (_ userInput: String?) -> String {
             if canConvert == true {
                 let baseOrUpper = convert.checkBaseOfUnit(from)
                 result = convert.convertNum(num, from, targetUnits, baseOrUpper, convert.checkUnitsType(from))
-            } else if canConvert == false {
+            } else  {
                 result += "상호간의 변환할 수 업는 단위입니다"
             }
         } else if modifiedInput.count == 1 {
@@ -208,7 +209,7 @@ func excuteConverting (_ userInput: String?) -> String {
             if canConvert == true {
                 let baseOrUpper = convert.checkBaseOfUnit(from)
                 result = convert.convertNum(num, from, targetUnits, baseOrUpper, convert.checkUnitsType(from))
-            } else if canConvert == false {
+            } else  {
                 result += "상호간의 변환할 수 업는 단위입니다"
             }
         }
@@ -224,7 +225,7 @@ func printResult (_ result: String) { print(result) }
 // 12. 입력가능한 값을 출력하는 부분
 func showConvertibleUnit() {
     print("""
-        <주의> 같은단위 내에서만 변환이 가능합니다.!
+        <입력예시> 123m or 132cm inch or 132yard inch,m
         길이 : \(LengthUnit.names)
         무게 : \(WeightUnit.names)
         부피 : \(VolumeUnit.names)
@@ -241,3 +242,4 @@ unitConvertLoop : while true {
     printResult(excuteConverting(userInput))
     print("---------------------------\n")
 }
+
