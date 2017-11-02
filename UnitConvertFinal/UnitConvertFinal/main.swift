@@ -203,7 +203,8 @@ func excuteConverting (_ userInput: String?) -> String {
             } else  {
                 result += "상호간의 변환할 수 업는 단위입니다"
             }
-        } else if modifiedInput.count == 1 {
+        }
+        else if modifiedInput.count == 1 {
             (from, num, targetUnits) = convert.divideOneArray(modifiedInput, type: checkUnit)
             canConvert = convert.compareUnitType(from, targetUnits)
             if canConvert == true {
@@ -213,7 +214,8 @@ func excuteConverting (_ userInput: String?) -> String {
                 result += "상호간의 변환할 수 업는 단위입니다"
             }
         }
-    } else {
+    }
+    else {
         result += "지원하지 않는 단위입니다."
     }
     return result
